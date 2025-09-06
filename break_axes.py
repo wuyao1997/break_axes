@@ -610,7 +610,7 @@ def add_broken_line_in_axis(
     dx: float = 3,
     dy: float = 3,
     **line_kwargs,
-) -> list[tuple[Line2D, Line2D]]:
+) -> dict[str, list[tuple[Line2D, Line2D]]]:
     """
     Add broken lines to Axes edges (x/y axis bounds) at specified positions.
 
@@ -653,24 +653,24 @@ def add_broken_line_in_axis(
 
     kwargs = dict(gap=gap, dx=dx, dy=dy, **line_kwargs)
 
-    broken_lines = []
+    broken_lines = {}
     if x:
         ylow, yhigh = ax.get_ylim()
         if which in ["lower", "both"]:
             broken_line = add_broken_line(ax, x, ylow, axis="x", **kwargs)
-            broken_lines.append(broken_line)
+            broken_lines["bottom"] = broken_line
         if which in ["upper", "both"]:
             broken_line = add_broken_line(ax, x, yhigh, axis="x", **kwargs)
-            broken_lines.append(broken_line)
+            broken_lines["top"] = broken_line
 
     if y:
         xlow, xhigh = ax.get_xlim()
         if which in ["lower", "both"]:
             broken_line = add_broken_line(ax, xlow, y, axis="y", **kwargs)
-            broken_lines.append(broken_line)
+            broken_lines["left"] = broken_line
         if which in ["upper", "both"]:
             broken_line = add_broken_line(ax, xhigh, y, axis="y", **kwargs)
-            broken_lines.append(broken_line)
+            broken_lines["right"] = broken_line
     return broken_lines
 
 
@@ -769,7 +769,7 @@ def broken_and_clip_axes(
     dy: float = 3,
     extend: float = None,
     **kwargs,
-):
+) -> dict[str, list[tuple[Line2D, Line2D]]]:
     """
     Wrapper to add broken line markers AND apply axis clipping in one call.
 
@@ -825,6 +825,6 @@ def broken_and_clip_axes(
     Please fix the axis display range via ax.set(xlim=..., ylim=...) or ax.set_xlim(...)
     and ax.set_ylim(...) before calling this function.
     """
-    add_broken_line_in_axis(ax, x, y, which, gap, dx, dy, **kwargs)
+    broken_lines = add_broken_line_in_axis(ax, x, y, which, gap, dx, dy, **kwargs)
     clip_axes(ax, x, y, which, axes_clip, gap, dx, dy, extend)
-    return
+    return broken_lines

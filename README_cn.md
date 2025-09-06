@@ -156,6 +156,57 @@ broken_and_clip_axes(ax, x=[1500], y=[1500],
 plt.show()
 ```
 
+### 4. 设置折叠线属性
+
+![schematic_diagram.png](https://raw.githubusercontent.com/wuyao1997/break_axes/main/image/schematic_diagram.png)
+
+![broken_lines_property.png](https://raw.githubusercontent.com/wuyao1997/break_axes/main/image/broken_lines_property.png)
+
+```python
+import numpy as np
+
+x = np.logspace(0, 4, 100)
+
+fig, ax = plt.subplots(figsize=(4,3))
+ax.set(xlim=(1,10000), ylim=(1,10000), facecolor="#DDFFAA")  
+ax.plot(x, x)
+ax.set_xticks([1, 10, 100, 500, 5000, 10000],
+              [1, 10, 100, 500, 5000, r'$10^4$'])
+ax.set_yticks([1, 10, 100, 500, 5000, 10000],
+              [1, 10, 100, 500, 5000, r'$10^4$'])
+
+ax.annotate("This is a very long long string.", 
+    xy=(5, 10), xytext=(10, 5000), 
+    arrowprops=dict(
+        arrowstyle='-|>',
+        connectionstyle="arc3,rad=0.1", 
+        color='k', 
+        shrinkA=5, shrinkB=5
+    )
+)
+
+ax.grid(ls=':')
+ax.set_xlabel("X Label")
+ax.set_ylabel("Y Label")
+ax.set_title("Set Broken Lines Propertye", pad=10)
+
+scale_axes(ax, 
+    x_interval=[(600, 4000, 0.1)], 
+    y_interval=[(600, 4000, 0.1)],
+    mode='log')
+broken_lines = broken_and_clip_axes(ax, x=[1500], y=[1500], 
+    axes_clip=True, which='both', gap=6, dx=4, dy=4)
+
+bottom_left, bottom_right = broken_lines["bottom"][0]
+bottom_left.set(color='r', linewidth=1)
+bottom_right.set(color='g', linewidth=1)
+
+left_bottom, left_top = broken_lines["left"][0]
+left_bottom.set(color='r', linewidth=2.5)
+left_top.set(color='g', linewidth=2.5)
+
+plt.show()
+```
 
 ## 注意事项
 1. **先固定坐标轴范围**：调用断裂/裁剪函数前，必须通过 `ax.set_xlim()` 或 `ax.set_ylim()` 

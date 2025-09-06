@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="break_axes",
-    version="0.2.2",
+    version="0.2.3",
     author="Wu Yao",
     author_email="wuyao@qq.com",
     description="A Matplotlib-based utility module for creating broken axes.",
