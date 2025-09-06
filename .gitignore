@@ -1,0 +1,6 @@
+__pycache__/
+break_axes.egg-info/
+build/
+dist/
+
+local/

@@ -1,4 +1,4 @@
-- [English Version](./README.md)
+- [English Version](https://github.com/wuyao1997/break_axes/blob/main/README.md)
 
 # break_axes：Matplotlib 坐标轴断裂与自定义缩放工具
 
@@ -76,7 +76,7 @@ print(f"break_axes version: {__version__}")
 
 ### 2. 多处断裂坐标轴
 
-![](./image/multi_break.png)
+![multi_break.png](https://raw.githubusercontent.com/wuyao1997/break_axes/main/image/multi_break.png)
 
 ```python
 fig, ax = plt.subplots(figsize=(4.5,3))
@@ -116,7 +116,7 @@ broken_and_clip_axes(ax, x=[-15,15], y=[70], axes_clip=True, which='lower',
 
 ### 3. 对数坐标轴
 
-![](./image/logscale_break.png)
+![logscale_break.png](https://raw.githubusercontent.com/wuyao1997/break_axes/main/image/logscale_break.png)
 
 ```python
 import numpy as np

@@ -1,4 +1,4 @@
-[中文版本](./README_cn.md)
+[中文版本](https://github.com/wuyao1997/break_axes/blob/main/README_cn.md)
 
 # break_axes: Matplotlib Axis Break and Custom Scaling Tool
 
@@ -74,7 +74,7 @@ print(f"break_axes version: {__version__}")
 
 ### 2. Multiple Axis Breaks
 
-![](./image/multi_break.png)
+![multi_break.png](https://raw.githubusercontent.com/wuyao1997/break_axes/main/image/multi_break.png)
 
 ```python
 fig, ax = plt.subplots(figsize=(4.5,3))
@@ -114,7 +114,7 @@ broken_and_clip_axes(ax, x=[-15,15], y=[70], axes_clip=True, which='lower',
 
 ### 3. Logarithmic Axes
 
-![](./image/logscale_break.png)
+![logscale_break.png](https://raw.githubusercontent.com/wuyao1997/break_axes/main/image/logscale_break.png)
 
 ```python
 import numpy as np
