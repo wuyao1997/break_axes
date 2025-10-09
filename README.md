@@ -19,9 +19,9 @@ Matplotlib natively does not support axis breaks (visual gaps) and flexible mult
     ```
 
 2. **Build the binary distribution package (wheel) locally**  
-   First install the `wheel` tool: `pip install wheel`, then run:
+   First install the `build` tool: `pip install build`, then run:
    ```bash
-   python setup.py bdist_wheel
+   python -m build
    ```
    This generates a `.whl` binary package in the `dist/` directory (faster installation).
 

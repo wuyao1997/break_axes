@@ -20,9 +20,9 @@ Matplotlib 原生不支持坐标轴断裂（视觉间隙）和灵活的多区间
     ```
 
 2. **本地构建二进制分发包（wheel）**  
-   需先安装 `wheel` 工具：`pip install wheel`，再执行：
+   需先安装 `build` 工具：`pip install build`，再执行：
    ```bash
-   python setup.py bdist_wheel
+   python -m build
    ```
    会在 `dist/` 目录下生成 `.whl` 格式的二进制包（安装更快）。
 
