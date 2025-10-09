@@ -527,6 +527,16 @@ def get_axes_clip_path(
         This region consists of closed rectangular segments that cover the Axes area
         excluding the gaps around the specified x and y break points.
     """
+    if x is None:
+        x = []
+    elif isinstance(x, (float, int)):
+        x = [x]
+
+    if y is None:
+        y = []
+    elif isinstance(y, (float, int)):
+        y = [y]
+
     xlow, xhigh = ax.get_xlim()
     xlst = [xlow]
     for _x in x:
@@ -821,6 +831,7 @@ def broken_and_clip_axes(
     Please fix the axis display range via ax.set(xlim=..., ylim=...) or ax.set_xlim(...)
     and ax.set_ylim(...) before calling this function.
     """
+
     broken_lines = add_broken_line_in_axis(ax, x, y, which, gap, dx, dy, **kwargs)
     clip_axes(ax, x, y, which, axes_clip, gap, dx, dy, extend)
     return broken_lines
