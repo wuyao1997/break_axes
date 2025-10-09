@@ -36,7 +36,9 @@ Matplotlib 原生不支持坐标轴断裂（视觉间隙）和灵活的多区间
 ## 核心功能
 
 通常来说，用户只需要使用 `scale_axes` 和 `broken_and_clip_axes` 这两个函数即可。
-单如果需要更灵活的设置断裂效果，可能需要阅读源码（不到900行，其中约一半为 docstring）。
+![framework.png](https://raw.githubusercontent.com/wuyao1997/break_axes/main/image/framework.png)
+
+但如果需要更灵活的设置断裂效果，可能需要阅读源码（不到900行，其中约一半为 docstring）。
 
 | 函数名 | 功能描述 |
 | ----- | ---------------------------------- |

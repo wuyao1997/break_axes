@@ -37,6 +37,8 @@ Matplotlib natively does not support axis breaks (visual gaps) and flexible mult
 Generally, users only need to use the two functions **`scale_axes`** and 
 **`broken_and_clip_axes`**. 
 
+![framework.png](https://raw.githubusercontent.com/wuyao1997/break_axes/main/image/framework.png)
+
 However, for more flexible break settings, you may need to read the source code 
 (less than 900 lines, about half of which are docstrings).
 
