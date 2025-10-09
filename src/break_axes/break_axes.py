@@ -564,8 +564,8 @@ def get_axes_clip_path(
 
 def scale_axes(
     ax: Axes,
-    x_interval: list[tuple[float, float, float]],
-    y_interval: list[tuple[float, float, float]],
+    x_interval: list[tuple[float, float, float]] = None,
+    y_interval: list[tuple[float, float, float]] = None,
     mode: Literal["linear", "log"] = "linear",
 ) -> None:
     """
