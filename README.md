@@ -46,6 +46,7 @@ However, for more flexible break settings, you may need to read the source code
 | `scale_axis` | A wrapper function for create_scale, used to directly apply scaling |
 | **`scale_axes`** | Used to apply axis scaling in batches, supporting simultaneous scaling of x-axis and y-axis |
 | `offset_data_point` | Get the vertex coordinates of the break identifier corresponding to the specified break point |
+| `get_broken_points` | Get the vertex coordinates of the marker end points |
 | `xy2points` | Combine input x, y coordinates into data point coordinates |
 | `add_broken_line` | Add break markers at specified positions |
 | `add_broken_line_in_axis` | Add break markers on the axis |
