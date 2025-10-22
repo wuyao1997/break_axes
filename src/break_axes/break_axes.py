@@ -35,7 +35,7 @@ from typing import Literal
 from matplotlib.axes import Axes
 from matplotlib.lines import Line2D
 from matplotlib.path import Path
-from matplotlib.scale import FuncScale, FuncScaleLog
+from matplotlib.scale import FuncScale, FuncScaleLog, FuncTransform, LogScale
 from matplotlib.spines import Spine
 from matplotlib.text import Text
 import matplotlib.transforms as mtransforms
@@ -44,6 +44,7 @@ import matplotlib.transforms as mtransforms
 def create_scale(
     interval: list[tuple[float, float, float]],
     mode: Literal["linear", "log"] = "linear",
+    base: float = 10.0,
 ) -> FuncScale | FuncScaleLog:
     """Create a ScaleBase object by FuncScale or FuncScaleLog.
 
@@ -117,7 +118,12 @@ def create_scale(
     if mode == "linear":
         return FuncScale(None, functions=(_forward, _inverse))
     else:
-        return FuncScaleLog(None, functions=(_forward, _inverse))
+        fscale = LogScale(None)
+
+        fscale._transform.base = base
+        fscale._transform = fscale._transform + FuncTransform(_forward, _inverse)
+        fscale._transform.base = base
+        return fscale
 
 
 def scale_axis(
@@ -125,6 +131,7 @@ def scale_axis(
     interval: list[tuple[float, float, float]],
     axis: Literal["x", "y"] = "x",
     mode: Literal["linear", "log"] = "linear",
+    base: float = 10.0,
 ) -> None:
     """Scale the axis by the given interval and factor.
 
@@ -142,7 +149,7 @@ def scale_axis(
     """
     if axis not in ["x", "y"]:
         raise ValueError("axis must be 'x' or 'y'")
-    scale = create_scale(interval, mode=mode)
+    scale = create_scale(interval, mode=mode, base=base)
     if axis == "x":
         ax.set_xscale(scale)
     if axis == "y":
@@ -574,9 +581,11 @@ def get_axes_clip_path(
 
 def scale_axes(
     ax: Axes,
-    x_interval: list[tuple[float, float, float]] = None,
-    y_interval: list[tuple[float, float, float]] = None,
+    x_interval: list[tuple[float, float, float]] | None = None,
+    y_interval: list[tuple[float, float, float]] | None = None,
     mode: Literal["linear", "log"] = "linear",
+    base_x: float = 10.0,
+    base_y: float = 10.0,
 ) -> None:
     """
     Configure scale and visible intervals for Axes x/y axes.
@@ -594,6 +603,10 @@ def scale_axes(
         Y-axis intervals: same format as x_interval; empty to no change
     mode : Literal["linear", "log"], optional
         Scale type for axes, default "linear"
+    base_x : float, optional
+        Base for log scale, default 10.0
+    base_y : float, optional
+        Base for log scale, default 10.0
 
     Returns
     -------
@@ -601,16 +614,16 @@ def scale_axes(
         Modifies Axes in-place
     """
     if x_interval:
-        scale_axis(ax, x_interval, axis="x", mode=mode)
+        scale_axis(ax, x_interval, axis="x", mode=mode, base=base_x)
     if y_interval:
-        scale_axis(ax, y_interval, axis="y", mode=mode)
+        scale_axis(ax, y_interval, axis="y", mode=mode, base=base_y)
     return
 
 
 def add_broken_line_in_axis(
     ax: Axes,
-    x: list[float] | float = None,
-    y: list[float] | float = None,
+    x: list[float] | float | None = None,
+    y: list[float] | float | None = None,
     which: Literal["lower", "upper", "both"] = "both",
     gap: float = 5,
     dx: float = 3,
@@ -766,14 +779,14 @@ def clip_axes(
 
 def broken_and_clip_axes(
     ax: Axes,
-    x: list[float] | float = None,
-    y: list[float] | float = None,
+    x: list[float] | float | None = None,
+    y: list[float] | float | None = None,
     axes_clip: bool = True,
     which: Literal["lower", "upper", "both"] = "both",
     gap: float = 5,
     dx: float = 3,
     dy: float = 3,
-    extend: float = None,
+    extend: float | None = None,
     **kwargs,
 ) -> dict[str, list[tuple[Line2D, Line2D]]]:
     """

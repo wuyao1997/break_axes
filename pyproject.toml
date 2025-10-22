@@ -1,7 +1,7 @@
 [project]
 
 name = "break_axes"
-version = "0.3.4"
+version = "0.4.0"
 authors = [{ name = "Wu Yao", email = "wuyao2020@gmail.com" }]
 description = "A Matplotlib-based utility module for creating broken axes."
 readme = "README.md"
