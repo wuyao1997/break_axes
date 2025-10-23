@@ -4,9 +4,10 @@
 
 A Python-based Matplotlib extension module for implementing **axis breaks** (visual gaps) and **multi-interval custom scaling** functions, suitable for displaying data with large value ranges or irrelevant intermediate intervals.
 
-
 ## Module Overview
+
 Matplotlib natively does not support axis breaks (visual gaps) and flexible multi-interval scaling. This module fills this gap with a series of easy-to-use functions, including:
+
 - Drawing break markers on axis edges to indicate data gaps
 - Clipping axis spines, lines, and plot elements to hide unwanted intervals
 - Supporting linear/logarithmic custom scaling for multiple data intervals
@@ -14,15 +15,18 @@ Matplotlib natively does not support axis breaks (visual gaps) and flexible mult
 ## Installation
 
 1. **Install from PyPI**
-    ```bash
-    pip install break_axes
-    ```
+
+   ```bash
+   pip install break_axes
+   ```
 
 2. **Build the binary distribution package (wheel) locally**  
    First install the `build` tool: `pip install build`, then run:
+
    ```bash
    python -m build
    ```
+
    This generates a `.whl` binary package in the `dist/` directory (faster installation).
 
 3. **Install the package locally (development mode)**  
@@ -31,40 +35,39 @@ Matplotlib natively does not support axis breaks (visual gaps) and flexible mult
    pip install -e .
    ```
 
-
 ## Core Functions
 
-Generally, users only need to use the two functions **`scale_axes`** and 
-**`broken_and_clip_axes`**. 
+Generally, users only need to use the two functions **`scale_axes`** and
+**`broken_and_clip_axes`**.
 
 ![framework.png](https://raw.githubusercontent.com/wuyao1997/break_axes/main/image/framework.png)
 
-However, for more flexible break settings, you may need to read the source code 
+However, for more flexible break settings, you may need to read the source code
 (less than 900 lines, about half of which are docstrings).
 
-| Function Name | Description |
-| ------------- | ------------------------------------ |
-| `create_scale` | Used to generate a ScaleBase object for scaled axes |
-| `scale_axis` | A wrapper function for create_scale, used to directly apply scaling |
-| **`scale_axes`** | Used to apply axis scaling in batches, supporting simultaneous scaling of x-axis and y-axis |
-| `offset_data_point` | Get the vertex coordinates of the break identifier corresponding to the specified break point |
-| `get_broken_points` | Get the vertex coordinates of the marker end points |
-| `xy2points` | Combine input x, y coordinates into data point coordinates |
-| `add_broken_line` | Add break markers at specified positions |
-| `add_broken_line_in_axis` | Add break markers on the axis |
-| `get_axis_clip_path` | Get the clipping path of the specified axis for clipping axis spines |
-| `get_axes_clip_path` | Get the clipping path of the axes for clipping artists within the axes |
-| `clip_axes` | Clip spines and artists |
-| **`broken_and_clip_axes`** | Wrapper for `add_broken_line_in_axis` and `clip_axes` |
-
+| Function Name              | Description                                                                                   |
+| -------------------------- | --------------------------------------------------------------------------------------------- |
+| `create_scale`             | Used to generate a ScaleBase object for scaled axes                                           |
+| `scale_axis`               | A wrapper function for create_scale, used to directly apply scaling                           |
+| **`scale_axes`**           | Used to apply axis scaling in batches, supporting simultaneous scaling of x-axis and y-axis   |
+| `offset_data_point`        | Get the vertex coordinates of the break identifier corresponding to the specified break point |
+| `get_broken_points`        | Get the vertex coordinates of the marker end points                                           |
+| `xy2points`                | Combine input x, y coordinates into data point coordinates                                    |
+| `add_broken_line`          | Add break markers at specified positions                                                      |
+| `add_broken_line_in_axis`  | Add break markers on the axis                                                                 |
+| `get_axis_clip_path`       | Get the clipping path of the specified axis for clipping axis spines                          |
+| `get_axes_clip_path`       | Get the clipping path of the axes for clipping artists within the axes                        |
+| `clip_axes`                | Clip spines and artists                                                                       |
+| **`broken_and_clip_axes`** | Wrapper for `add_broken_line_in_axis` and `clip_axes`                                         |
 
 ## Dependencies
+
 - Python 3.8 or higher
 - Matplotlib 3.5.0 or higher  
   Installation command: `pip install matplotlib`
 
-
 ## Quick Start
+
 ### 1. Import the Module
 
 ```python
@@ -92,7 +95,7 @@ ax.grid(ls=':', lw=0.5, color='dimgray')
 # scale x-axis and y-axis to reduce the blank space
 scale_axes(ax,
            x_interval=[(-28, -2, 0.01), (2, 28, 0.01)],
-           y_interval=[(40,100, 0.1), (100, 180, 0.6)], 
+           y_interval=[(40,100, 0.1), (100, 180, 0.6)],
            mode="linear")
 
 
@@ -103,11 +106,11 @@ rects = ax.bar([-31,-30,-29,-1,0,1,31,30,29], [20,40,22,132,155,108,5,27,17] )
 ax.bar_label(rects)
 
 # Text and Annotation wont be clipped
-ax.annotate("This is a very long long string.", xy=(-30, 80), xytext=(-30, 168), 
+ax.annotate("This is a very long long string.", xy=(-30, 80), xytext=(-30, 168),
     arrowprops=dict(
         arrowstyle='-|>',
-        connectionstyle="arc3,rad=0.1", 
-        color='k', 
+        connectionstyle="arc3,rad=0.1",
+        color='k',
         shrinkA=5, shrinkB=5
     )
 )
@@ -126,22 +129,21 @@ broken_and_clip_axes(ax, x=[-15,15], y=[70], axes_clip=True, which='lower',
 ```python
 import numpy as np
 
-x = np.logspace(0, 4, 100)
+x = np.logspace(0, 16, 100, base=2)
 
 fig, ax = plt.subplots(figsize=(4,3))
-ax.set(xlim=(1,10000), ylim=(1,10000), facecolor="#DDFFAA")  
+ax.set(xlim=(1, 2<<16), ylim=(1, 2<<16), facecolor="#DDFFAA")
 ax.plot(x, x)
-ax.set_xticks([1, 10, 100, 500, 5000, 10000],
-              [1, 10, 100, 500, 5000, r'$10^4$'])
-ax.set_yticks([1, 10, 100, 500, 5000, 10000],
-              [1, 10, 100, 500, 5000, r'$10^4$'])
+ax.set_xticks([ 2<<i for i in range(0,17,3)])
+# ax.set_yticks([1, 10, 100, 500, 5000, 10000],
+#               [1, 10, 100, 500, 5000, r'$10^4$'])  # type: ignore
 
-ax.annotate("This is a very long long string.", 
-    xy=(5, 10), xytext=(10, 5000), 
+ax.annotate("This is a very long long string.",
+    xy=(5, 10), xytext=(10, 20000),
     arrowprops=dict(
         arrowstyle='-|>',
-        connectionstyle="arc3,rad=0.1", 
-        color='k', 
+        connectionstyle="arc3,rad=0.1",
+        color='k',
         shrinkA=5, shrinkB=5
     )
 )
@@ -151,11 +153,11 @@ ax.set_xlabel("X Label")
 ax.set_ylabel("Y Label")
 ax.set_title("Broken Axis Example - Log Mode")
 
-scale_axes(ax, 
-    x_interval=[(600, 4000, 0.1)], 
-    y_interval=[(600, 4000, 0.1)],
-    mode='log')
-broken_and_clip_axes(ax, x=[1500], y=[1500], 
+scale_axes(ax,
+    x_interval=[(3, 6, 0.5)],
+    y_interval=[(9, 12, 0.5)],
+    mode='log', base_x=2, base_y=2)
+broken_and_clip_axes(ax, x=[23], y=[1450],
     axes_clip=True, which='lower', gap=5, dx=3, dy=3)
 
 plt.show()
@@ -170,22 +172,20 @@ plt.show()
 ```python
 import numpy as np
 
-x = np.logspace(0, 4, 100)
+x = np.logspace(-2, 4, 150)
 
 fig, ax = plt.subplots(figsize=(4,3))
-ax.set(xlim=(1,10000), ylim=(1,10000), facecolor="#DDFFAA")  
+ax.set(xlim=(1,10000), ylim=(1,10000), facecolor="#DDFFAA")
 ax.plot(x, x)
-ax.set_xticks([1, 10, 100, 500, 5000, 10000],
-              [1, 10, 100, 500, 5000, r'$10^4$'])
-ax.set_yticks([1, 10, 100, 500, 5000, 10000],
-              [1, 10, 100, 500, 5000, r'$10^4$'])
+ax.set_xticks([0.01, 0.1, 1, 10, 100, 500, 5000, 10000])
+ax.set_yticks([0.01, 0.1, 1, 10, 100, 500, 5000, 10000])
 
-ax.annotate("This is a very long long string.", 
-    xy=(5, 10), xytext=(10, 5000), 
+ax.annotate("This is a very long long string.",
+    xy=(5, 10), xytext=(10, 5000),
     arrowprops=dict(
         arrowstyle='-|>',
-        connectionstyle="arc3,rad=0.1", 
-        color='k', 
+        connectionstyle="arc3,rad=0.1",
+        color='k',
         shrinkA=5, shrinkB=5
     )
 )
@@ -195,11 +195,11 @@ ax.set_xlabel("X Label")
 ax.set_ylabel("Y Label")
 ax.set_title("Set Broken Lines Propertye", pad=10)
 
-scale_axes(ax, 
-    x_interval=[(600, 4000, 0.1)], 
-    y_interval=[(600, 4000, 0.1)],
+scale_axes(ax,
+    x_interval=[(2, 3, 0.5)],
+    y_interval=[(-1, 0, 0.5)],
     mode='log')
-broken_lines = broken_and_clip_axes(ax, x=[1500], y=[1500], 
+broken_lines = broken_and_clip_axes(ax, x=[300], y=[0.3],
     axes_clip=True, which='both', gap=6, dx=4, dy=4)
 
 bottom_left, bottom_right = broken_lines["bottom"][0]
@@ -213,15 +213,13 @@ left_top.set(color='g', linewidth=2.5)
 plt.show()
 ```
 
-
 ## Notes
+
 1. **Fix axis ranges first**: Before calling the break/clip functions, you must fix the axis ranges using `ax.set_xlim()` or `ax.set_ylim()` — this is crucial to ensure accurate calculation of break positions.
 2. **Interval rules**: When using `scale_axes`, intervals must be **non-overlapping and in order** (e.g., `[(0,2,2), (5,10,1)]` is valid, `[(5,10,1), (0,2,2)]` is invalid).
 3. **Clipping exclusions**: Text elements (such as labels, tick values) and the axis background (`ax.patch`) will not be clipped to avoid affecting readability. Users can also use `get_axes_clip_path` to obtain the axis clipping path and manually add artists that need to be clipped with reference to the `clip_axes` function.
 
-
 ## Version and Author
+
 - Version: 0.2.0
 - Author: Wu Yao <wuyao1997@qq.com>
-
-
