@@ -213,6 +213,12 @@ left_top.set(color='g', linewidth=2.5)
 plt.show()
 ```
 
+### 5. Not Clip Line
+
+![heatcapacity_of_ice_and_water.png](https://raw.githubusercontent.com/wuyao1997/break_axes/main/image/heatcapacity_of_ice_and_water.png)
+
+Code to see the example: [heat_capacity_of_ice_and_water.ipynb](https://github.com/wuyao1997/break_axes/blob/main/examples/heat_capacity_of_ice_and_water.ipynb)
+
 ## Notes
 
 1. **Fix axis ranges first**: Before calling the break/clip functions, you must fix the axis ranges using `ax.set_xlim()` or `ax.set_ylim()` — this is crucial to ensure accurate calculation of break positions.
