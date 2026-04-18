@@ -37,8 +37,11 @@ Matplotlib natively does not support axis breaks (visual gaps) and flexible mult
 
 ## Core Functions
 
-Generally, users only need to use the two functions **`scale_axes`** and
-**`broken_and_clip_axes`**.
+The functions are usually used are below:
+
+- **`scale_axes`**
+- **`broken_and_clip_axes`**
+- **`remove_minor_ticks`**
 
 ![framework.png](https://raw.githubusercontent.com/wuyao1997/break_axes/main/image/framework.png)
 
@@ -59,6 +62,10 @@ However, for more flexible break settings, you may need to read the source code
 | `get_axes_clip_path`       | Get the clipping path of the axes for clipping artists within the axes                        |
 | `clip_axes`                | Clip spines and artists                                                                       |
 | **`broken_and_clip_axes`** | Wrapper for `add_broken_line_in_axis` and `clip_axes`                                         |
+| **`remove_minor_ticks`**   | Remove minor ticks from the given axis                                                        |
+| **`remove_xaxis_minor_ticks`** | Remove minor ticks from the x-axis                                                        |
+| **`remove_yaxis_minor_ticks`** | Remove minor ticks from the y-axis                                                        |  
+
 
 ## Dependencies
 
@@ -163,7 +170,49 @@ broken_and_clip_axes(ax, x=[23], y=[1450],
 plt.show()
 ```
 
-### 4. Set Broken Lines Property
+### 4. Remove Minor Ticks
+
+Minor Ticks in scaled interval maybe too dense because of the small scale factor,
+use `remove_minor_ticks` to remove minor ticks in the given axis.
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+from break_axes import broken_and_clip_axes, scale_axes
+from break_axes.break_axes import remove_yaxis_minor_ticks
+
+plt.rcParams["ytick.minor.visible"] = True
+plt.rcParams["xtick.minor.visible"] = True
+plt.rcParams["xtick.top"] = True
+plt.rcParams["ytick.right"] = True
+
+
+x = np.linspace(0, np.pi, 25)
+y1 = 0.15 * np.sin(x) + 0.97
+y2 = -0.06 * np.sin(x)
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(6, 2.4), sharey=True)
+for ax in (ax1, ax2):
+    ax.set_xlim(-0.1, np.pi + 0.1)
+    ax.plot(x, y1, marker="o", mew=1, mec="dimgray")
+    ax.plot(x, y2, marker="s", mew=1, mec="dimgray")
+
+    ax.set_yticks([-0.05, 0, 0.95, 1, 1.05, 1.1])
+    scale_axes(ax, y_interval=[(0.02, 0.95, 0.05)])
+
+    ax.set_yticks([-0.05, 0, 0.95, 1, 1.05, 1.1])
+
+    broken_and_clip_axes(ax, y=[0.5])
+
+# must be put below set_yticks or set_xticks
+remove_yaxis_minor_ticks(ax2, intervals=[(0.02, 0.95)])
+
+plt.show()
+```
+![remove_ticks_in_scaled_interval.png](https://raw.githubusercontent.com/wuyao1997/break_axes/main/image/remove_ticks_in_scaled_interval.png)
+
+### 5. Set Broken Lines Property
 
 ![schematic_diagram.png](https://raw.githubusercontent.com/wuyao1997/break_axes/main/image/schematic_diagram.png)
 
@@ -213,7 +262,7 @@ left_top.set(color='g', linewidth=2.5)
 plt.show()
 ```
 
-### 5. Not Clip Line
+### 6. Not Clip Line
 
 ![heatcapacity_of_ice_and_water.png](https://raw.githubusercontent.com/wuyao1997/break_axes/main/image/heatcapacity_of_ice_and_water.png)
 
@@ -227,5 +276,5 @@ Code to see the example: [heat_capacity_of_ice_and_water.ipynb](https://github.c
 
 ## Version and Author
 
-- Version: 0.2.0
+- Version: 0.5.0
 - Author: Wu Yao <wuyao1997@qq.com>

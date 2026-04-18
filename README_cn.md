@@ -39,7 +39,12 @@ Matplotlib 原生不支持坐标轴断裂（视觉间隙）和灵活的多区间
 
 ## 核心功能
 
-通常来说，用户只需要使用 `scale_axes` 和 `broken_and_clip_axes` 这两个函数即可。
+常用的函数为以下几个：
+
+- **`scale_axes`**
+- **`broken_and_clip_axes`**
+- **`remove_minor_ticks`**
+
 ![framework.png](https://raw.githubusercontent.com/wuyao1997/break_axes/main/image/framework.png)
 
 但如果需要更灵活的设置断裂效果，可能需要阅读源码（不到 900 行，其中约一半为 docstring）。
@@ -57,6 +62,9 @@ Matplotlib 原生不支持坐标轴断裂（视觉间隙）和灵活的多区间
 | `get_axes_clip_path`       | 获取坐标轴的裁剪路径，用于对坐标轴内 artists 进行裁剪 |
 | `clip_axes`                | 对轴脊和 artists 进行裁剪                             |
 | **`broken_and_clip_axes`** | `add_broken_line_in_axis` 和 `clip_axes` 的包装       |
+| **`remove_minor_ticks`**   | 从给定轴中移除次刻度线                                |
+| **`remove_xaxis_minor_ticks`** | 从给定 x 轴中移除次刻度线                         |
+| **`remove_yaxis_minor_ticks`** | 从给定 y 轴中移除次刻度线                         |
 
 ## 依赖环境
 
@@ -159,7 +167,48 @@ broken_and_clip_axes(ax, x=[23], y=[1450],
 plt.show()
 ```
 
-### 4. 设置折叠线属性
+### 4. Remove Minor Ticks
+
+次刻度线在缩放区间可能过于密集，使用 `remove_minor_ticks` 可移除缩放区间内的次刻度线。
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+from break_axes import broken_and_clip_axes, scale_axes
+from break_axes.break_axes import remove_yaxis_minor_ticks
+
+plt.rcParams["ytick.minor.visible"] = True
+plt.rcParams["xtick.minor.visible"] = True
+plt.rcParams["xtick.top"] = True
+plt.rcParams["ytick.right"] = True
+
+
+x = np.linspace(0, np.pi, 25)
+y1 = 0.15 * np.sin(x) + 0.97
+y2 = -0.06 * np.sin(x)
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(6, 2.4), sharey=True)
+for ax in (ax1, ax2):
+    ax.set_xlim(-0.1, np.pi + 0.1)
+    ax.plot(x, y1, marker="o", mew=1, mec="dimgray")
+    ax.plot(x, y2, marker="s", mew=1, mec="dimgray")
+
+    ax.set_yticks([-0.05, 0, 0.95, 1, 1.05, 1.1])
+    scale_axes(ax, y_interval=[(0.02, 0.95, 0.05)])
+
+    ax.set_yticks([-0.05, 0, 0.95, 1, 1.05, 1.1])
+
+    broken_and_clip_axes(ax, y=[0.5])
+
+# must be put below set_yticks or set_xticks
+remove_yaxis_minor_ticks(ax2, intervals=[(0.02, 0.95)])
+
+plt.show()
+```
+![remove_ticks_in_scaled_interval.png](https://raw.githubusercontent.com/wuyao1997/break_axes/main/image/remove_ticks_in_scaled_interval.png)
+
+### 5. 设置折叠线属性
 
 ![schematic_diagram.png](https://raw.githubusercontent.com/wuyao1997/break_axes/main/image/schematic_diagram.png)
 
@@ -209,6 +258,12 @@ left_top.set(color='g', linewidth=2.5)
 plt.show()
 ```
 
+### 6. 不裁剪折特定元素
+
+![heatcapacity_of_ice_and_water.png](https://raw.githubusercontent.com/wuyao1997/break_axes/main/image/heatcapacity_of_ice_and_water.png)
+
+参见案例：[heat_capacity_of_ice_and_water.ipynb](https://github.com/wuyao1997/break_axes/blob/main/examples/heat_capacity_of_ice_and_water.ipynb)
+
 ## 注意事项
 
 1. **先固定坐标轴范围**：调用断裂/裁剪函数前，必须通过 `ax.set_xlim()` 或 `ax.set_ylim()`
@@ -221,5 +276,5 @@ plt.show()
 
 ## 版本与作者
 
-- 版本：0.2.0
+- 版本：0.5.0
 - 作者：Wu Yao <wuyao1997@qq.com>
