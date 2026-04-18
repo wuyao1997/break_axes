@@ -41,6 +41,37 @@ from matplotlib.text import Text
 import matplotlib.transforms as mtransforms
 
 
+def remove_minor_ticks(
+    ax: Axes,
+    intervals: list[tuple[float, ...]],
+    axis: Literal["x", "y"] = "x",
+):
+    _axis = ax.get_xaxis() if axis == "x" else ax.get_yaxis()
+    _axis._update_ticks()
+    minor_ticks = _axis.get_minor_ticks()
+    for minor_tick in minor_ticks:
+        loc = minor_tick.get_loc()
+        for interval in intervals:
+            vmin, vmax = interval[:2]
+            if loc > vmin and loc < vmax:
+                minor_tick.set_visible(False)
+    return
+
+
+def remove_xaxis_minor_ticks(
+    ax: Axes,
+    intervals: list[tuple[float, ...]],
+):
+    remove_minor_ticks(ax, intervals, axis="x")
+
+
+def remove_yaxis_minor_ticks(
+    ax: Axes,
+    intervals: list[tuple[float, ...]],
+):
+    remove_minor_ticks(ax, intervals, axis="y")
+
+
 def create_scale(
     interval: list[tuple[float, float, float]],
     mode: Literal["linear", "log"] = "linear",
@@ -154,6 +185,7 @@ def scale_axis(
         ax.set_xscale(scale)
     if axis == "y":
         ax.set_yscale(scale)
+
     return
 
 
